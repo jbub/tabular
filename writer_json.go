@@ -2,6 +2,7 @@ package tabular
 
 import (
 	"bufio"
+	"encoding/json"
 	"io"
 	"strings"
 )
@@ -61,18 +62,16 @@ func (j *jsonTableWriter) write() error {
 		j.writeIndent("{", level+1)
 
 		for hidx, hdr := range j.d.Headers() {
-			j.writeInlineIndent("\"", level+2)
+			j.writeInlineIndent("", level+2)
 			j.writeEscaped(hdr.Key)
 
 			if j.opts.Indent > 0 {
-				j.writeString("\": ")
+				j.writeString(": ")
 			} else {
-				j.writeString("\":")
+				j.writeString(":")
 			}
 
-			j.writeString("\"")
 			j.writeEscaped(row.Get(hidx))
-			j.writeString("\"")
 
 			if hidx+1 != j.d.HeaderCount() {
 				j.writeString(",")
@@ -138,5 +137,11 @@ func (j *jsonTableWriter) writeEscaped(s string) {
 }
 
 func (j *jsonTableWriter) escapeString(s string) string {
+	b, err := json.Marshal(s)
+	if err != nil {
+		j.err = err
+	} else {
+		return string(b)
+	}
 	return s
 }
