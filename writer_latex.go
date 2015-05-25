@@ -3,6 +3,7 @@ package tabular
 import (
 	"bufio"
 	"io"
+	"strings"
 )
 
 // LatexOpts represents options passed to the LaTeX writer.
@@ -39,11 +40,24 @@ func (wl *LatexWriter) Write(d *Dataset, w io.Writer) error {
 	return tw.write()
 }
 
+var replacements = []string{
+	"&", "\\&",
+	"%", "\\%",
+	"$", "\\$",
+	"#", "\\#",
+	"{", "\\{",
+	"}", "\\}",
+	"~", "\\textasciitilde",
+	"^", "\\textasciicircum",
+	"\\", "\\textbackslash",
+}
+
 func newLatexTableWriter(d *Dataset, w io.Writer, opts *LatexOpts) *latexTableWriter {
 	return &latexTableWriter{
-		d:    d,
-		w:    bufio.NewWriter(w),
-		opts: opts,
+		d:        d,
+		w:        bufio.NewWriter(w),
+		opts:     opts,
+		replacer: strings.NewReplacer(replacements...),
 	}
 }
 
@@ -52,6 +66,8 @@ type latexTableWriter struct {
 	w    *bufio.Writer
 	opts *LatexOpts
 	err  error
+
+	replacer *strings.Replacer
 }
 
 func (l *latexTableWriter) write() error {
@@ -95,7 +111,8 @@ func (l *latexTableWriter) writeHeaders() {
 
 func (l *latexTableWriter) writeHeader(idx int, hdr *Header) {
 	width := l.d.GetIdxWidth(idx)
-	l.writeString(padString(hdr.Title, width))
+	padded := padString(hdr.Title, width)
+	l.writeEscaped(padded)
 
 	if l.d.columns > idx+1 {
 		l.writeString(" & ")
@@ -118,7 +135,7 @@ func (l *latexTableWriter) writeRow(r *Row) {
 func (l *latexTableWriter) writeItem(idx int, item string) {
 	width := l.d.GetIdxWidth(idx)
 	padded := padString(item, width)
-	l.writeString(padded)
+	l.writeEscaped(padded)
 
 	if l.d.columns > idx+1 {
 		l.writeString(" & ")
@@ -127,8 +144,12 @@ func (l *latexTableWriter) writeItem(idx int, item string) {
 
 func (l *latexTableWriter) writeElem(name string, val string) {
 	l.writeString("\\" + name + "{")
-	l.writeString(val)
+	l.writeEscaped(val)
 	l.writeString("}\n")
+}
+
+func (l *latexTableWriter) writeEscaped(s string) {
+	l.writeString(l.escapeString(s))
 }
 
 func (l *latexTableWriter) writeString(s string) {
@@ -140,8 +161,5 @@ func (l *latexTableWriter) writeString(s string) {
 }
 
 func (l *latexTableWriter) escapeString(s string) string {
-	// TODO escape
-	// & % $ # _ { } => with backslashes
-	// ~ ^ \ => \textasciitilde, \textasciicircum, and \textbackslash.
-	return s
+	return l.replacer.Replace(s)
 }

@@ -55,6 +55,30 @@ John       & Malkovich & 42  \\ \hline
 	s.Equal(expected, out)
 }
 
+func (s *LatexWriterTestSuite) TestWriteCaptionEscape() {
+	opts := &LatexOpts{
+		Caption: "Te#st capt&ion",
+	}
+	w := NewLatexWriter(opts)
+	d, err := newTestDataset()
+	s.Nil(err)
+	out, err := newTestWrite(d, w)
+	expected :=
+		`\begin{table}[h]
+\begin{tabular}{|l|l|l|}
+\hline
+First name & Last name & Age \\ \hline
+Julia      & Roberts   & 40  \\ \hline
+John       & Malkovich & 42  \\ \hline
+\end{tabular}
+\caption{Te\#st capt\&ion}
+\end{table}
+`
+
+	s.Nil(err)
+	s.Equal(expected, out)
+}
+
 func (s *LatexWriterTestSuite) TestWriteCenter() {
 	opts := &LatexOpts{
 		Center: true,
