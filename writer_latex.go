@@ -56,6 +56,11 @@ type latexTableWriter struct {
 
 func (l *latexTableWriter) write() error {
 	l.writeString("\\begin{table}[h]\n")
+
+	if l.opts.Center {
+		l.writeString("\\centering\n")
+	}
+
 	l.writeString("\\begin{tabular}{|l|l|l|}\n")
 	l.writeString("\\hline\n")
 
