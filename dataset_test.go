@@ -76,6 +76,7 @@ func (s *DatasetTestSuite) TestRowWidthWithHeaders() {
 	r2 := NewRow("julia", "mitchell")
 	err = d.Append(r2)
 	s.Error(err)
+	s.True(d.HasHeaders())
 }
 
 func (s *DatasetTestSuite) TestRowWidthWithoutHeaders() {
@@ -88,6 +89,7 @@ func (s *DatasetTestSuite) TestRowWidthWithoutHeaders() {
 	r2 := NewRow("john")
 	err = d.Append(r2)
 	s.Error(err)
+	s.False(d.HasHeaders())
 }
 
 func (s *DatasetTestSuite) TestSort() {
@@ -130,6 +132,50 @@ func (s *DatasetTestSuite) TestSortReverse() {
 	s.Equal(e1, r3)
 	s.Equal(e2, r2)
 	s.Equal(e3, r1)
+}
+
+func (s *DatasetTestSuite) TestHasColumns() {
+	d := NewDataSet()
+	d.AddHeader("name", "Name")
+	d.AddHeader("surname", "Surname")
+
+	s.True(d.HasCol("name"))
+	s.True(d.HasCol("surname"))
+	s.False(d.HasCol("not"))
+	s.Equal(2, d.HeaderCount())
+}
+
+func (s *DatasetTestSuite) TestColValues() {
+	d := NewDataSet()
+	d.AddHeader("name", "Name")
+	d.AddHeader("surname", "Surname")
+
+	r1 := NewRow("julia", "mitchell")
+	r2 := NewRow("martin", "brown")
+	r3 := NewRow("peter", "kafka")
+	d.Append(r1, r2, r3)
+
+	s.Equal([]string{"julia", "martin", "peter"}, d.GetColValues("name"))
+	s.Equal([]string{"mitchell", "brown", "kafka"}, d.GetColValues("surname"))
+}
+
+func (s *DatasetTestSuite) TestColWidth() {
+	d := NewDataSet()
+	d.AddHeader("name", "Name")
+	d.AddHeader("surname", "Surname")
+
+	r1 := NewRow("julia", "mitchell")
+	r2 := NewRow("martin", "brown")
+	r3 := NewRow("peter", "kafka")
+	d.Append(r1, r2, r3)
+
+	s.Equal(6, d.GetKeyWidth("name"))
+	s.Equal(8, d.GetKeyWidth("surname"))
+	s.Equal(0, d.GetKeyWidth("not"))
+
+	s.Equal(6, d.GetIdxWidth(0))
+	s.Equal(8, d.GetIdxWidth(1))
+	s.Equal(0, d.GetIdxWidth(23))
 }
 
 func TestDatasetTestSuite(t *testing.T) {
