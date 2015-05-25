@@ -31,6 +31,30 @@ John       & Malkovich & 42  \\ \hline
 	s.Equal(expected, out)
 }
 
+func (s *LatexWriterTestSuite) TestWriteCaption() {
+	opts := &LatexOpts{
+		Caption: "Test caption",
+	}
+	w := NewLatexWriter(opts)
+	d, err := newTestDataset()
+	s.Nil(err)
+	out, err := newTestWrite(d, w)
+	expected :=
+		`\begin{table}[h]
+\begin{tabular}{|l|l|l|}
+\hline
+First name & Last name & Age \\ \hline
+Julia      & Roberts   & 40  \\ \hline
+John       & Malkovich & 42  \\ \hline
+\end{tabular}
+\caption{Test caption}
+\end{table}
+`
+
+	s.Nil(err)
+	s.Equal(expected, out)
+}
+
 func TestLatexWriterTestSuite(t *testing.T) {
 	suite.Run(t, new(LatexWriterTestSuite))
 }

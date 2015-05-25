@@ -64,10 +64,13 @@ func (l *latexTableWriter) write() error {
 	}
 
 	l.writeRows()
-
 	l.writeString("\\end{tabular}\n")
-	l.writeString("\\end{table}\n")
 
+	if l.opts.Caption != "" {
+		l.writeElem("caption", l.opts.Caption)
+	}
+
+	l.writeString("\\end{table}\n")
 	return l.flush()
 }
 
@@ -115,6 +118,12 @@ func (l *latexTableWriter) writeItem(idx int, item string) {
 	if l.d.columns > idx+1 {
 		l.writeString(" & ")
 	}
+}
+
+func (l *latexTableWriter) writeElem(name string, val string) {
+	l.writeString("\\" + name + "{")
+	l.writeString(val)
+	l.writeString("}\n")
 }
 
 func (l *latexTableWriter) writeString(s string) {
