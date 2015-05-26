@@ -2,6 +2,7 @@ package tabular
 
 import (
 	"bufio"
+	"html"
 	"io"
 	"strings"
 )
@@ -114,19 +115,19 @@ func (h *htmlTableWriter) writeRowItem(item string, level int) {
 
 func (h *htmlTableWriter) writeElem(name string, val string, class string, level int) {
 	h.writeStartElem(name, level, class, false)
-	h.writeString(val)
+	h.writeEscaped(val)
 	h.writeEndElem(name, level, true)
 }
 
 func (h *htmlTableWriter) writeInlineElem(name string, val string, class string, level int) {
 	h.writeStartElem(name, level, class, false)
-	h.writeString(val)
+	h.writeEscaped(val)
 	h.writeInlineEndElem(name, level, true)
 }
 
 func (h *htmlTableWriter) writeStartElem(name string, level int, class string, newline bool) {
 	if class != "" {
-		h.writeIndent(`<`+name+` class="`+class+`">`, level, true, false, newline)
+		h.writeIndent(`<`+name+` class="`+h.escapeAttr(class)+`">`, level, true, false, newline)
 	} else {
 		h.writeIndent("<"+name+">", level, true, false, newline)
 	}
@@ -152,6 +153,10 @@ func (h *htmlTableWriter) writeIndent(val string, level int, start bool, inline 
 	}
 }
 
+func (h *htmlTableWriter) writeEscaped(val string) {
+	h.writeString(h.escapeVal(val))
+}
+
 func (h *htmlTableWriter) writeString(val string) {
 	if h.err != nil {
 		return
@@ -165,4 +170,12 @@ func (h *htmlTableWriter) flush() error {
 		return h.err
 	}
 	return h.w.Flush()
+}
+
+func (h *htmlTableWriter) escapeVal(val string) string {
+	return html.EscapeString(val)
+}
+
+func (h *htmlTableWriter) escapeAttr(val string) string {
+	return html.EscapeString(val)
 }

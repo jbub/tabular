@@ -175,6 +175,45 @@ func (s *HTMLWriterTestSuite) TestWriteCaption() {
 	s.Equal(expected, out)
 }
 
+func (s *HTMLWriterTestSuite) TestWriteCaptionEscape() {
+	opts := &HTMLOpts{
+		Indent:     4,
+		Caption:    "Oh m\"y!",
+		TableClass: "\"dsa",
+	}
+	w := NewHTMLWriter(opts)
+	d, err := newTestDataset()
+	s.Nil(err)
+	out, err := newTestWrite(d, w)
+	expected :=
+		`<table class="&#34;dsa">
+    <caption>Oh m&#34;y!</caption>
+    <thead>
+        <tr>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Age</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Julia</td>
+            <td>Roberts</td>
+            <td>40</td>
+        </tr>
+        <tr>
+            <td>John</td>
+            <td>Malkovich</td>
+            <td>42</td>
+        </tr>
+    </tbody>
+</table>
+`
+
+	s.Nil(err)
+	s.Equal(expected, out)
+}
+
 func TestHTMLWriterTestSuite(t *testing.T) {
 	suite.Run(t, new(HTMLWriterTestSuite))
 }
