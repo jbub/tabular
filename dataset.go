@@ -32,13 +32,13 @@ func NewDataSet() *Dataset {
 	return d
 }
 
-// Dataset represents set of data.
+// Dataset represents a set of data.
 type Dataset struct {
 	headers *Headers
 	rows    []*Row
 
 	columns int
-	widths  map[int]int
+	lengths map[int]int
 }
 
 // AddHeader adds new header.
@@ -74,7 +74,7 @@ func (d *Dataset) Append(rows ...*Row) error {
 			return err
 		}
 		d.rows = append(d.rows, r)
-		d.updateWidths(r)
+		d.updateLengths(r)
 	}
 	return nil
 }
@@ -95,17 +95,6 @@ func (d *Dataset) GetColValues(key string) []string {
 		return col
 	}
 	return nil
-}
-
-// GetColsValues returns values of given columns.
-func (d *Dataset) GetColsValues(keys []string) map[string][]string {
-	data := make(map[string][]string)
-	for _, key := range keys {
-		if cols := d.GetColValues(key); cols != nil {
-			data[key] = cols
-		}
-	}
-	return data
 }
 
 // GetKeyWidth returns maximum column width.
@@ -225,19 +214,19 @@ func (d *Dataset) updateHeaders() {
 	d.columns = d.HeaderCount()
 }
 
-func (d *Dataset) updateWidths(r *Row) {
+func (d *Dataset) updateLengths(r *Row) {
 	if !d.HasHeaders() {
 		d.columns = r.Len()
 	}
 
-	if d.widths == nil {
-		d.widths = make(map[int]int)
+	if d.lengths == nil {
+		d.lengths = make(map[int]int)
 	}
 
 	for idx, item := range r.Items() {
 		l := len(item)
-		if l > d.widths[idx] {
-			d.widths[idx] = l
+		if l > d.lengths[idx] {
+			d.lengths[idx] = l
 		}
 	}
 }
@@ -253,18 +242,18 @@ func (d *Dataset) getColumnIndex(key string) (int, bool) {
 
 func (d *Dataset) getIndexWidth(idx int) int {
 	if d.isValidIndex(idx) {
-		width := d.widths[idx]
+		length := d.lengths[idx]
 		if d.HasHeaders() {
 			if h, ok := d.GetHeader(idx); ok {
 				hdrWidth := len(h.Title)
-				if hdrWidth > width {
+				if hdrWidth > length {
 					return hdrWidth
 				}
 			}
 		}
-		return width
+		return length
 	}
-	return d.widths[idx]
+	return d.lengths[idx]
 }
 
 func (d *Dataset) isValidIndex(idx int) bool {
