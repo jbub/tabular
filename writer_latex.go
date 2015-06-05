@@ -93,16 +93,9 @@ func (l *latexTableWriter) write() error {
 	return l.flush()
 }
 
-func (l *latexTableWriter) flush() error {
-	if l.err != nil {
-		return l.err
-	}
-	return l.w.Flush()
-}
-
 func (l *latexTableWriter) writeHead() {
 	if l.opts.TabularX {
-		l.writeTabularxHead()
+		l.writeTabularXHead()
 	} else {
 		l.writeTabularHead()
 	}
@@ -126,8 +119,8 @@ func (l *latexTableWriter) writeTabularHead() {
 	l.writeString("}")
 }
 
-func (l *latexTableWriter) writeTabularxHead() {
-	l.writeString("\\begin{tabularx}{")
+func (l *latexTableWriter) writeTabularXHead() {
+	l.writeString("\\begin{tabularx}{\\textwidth}{")
 
 	for i := 0; i < l.d.columns; i++ {
 		l.writeString("|X")
@@ -199,4 +192,11 @@ func (l *latexTableWriter) writeString(s string) {
 
 func (l *latexTableWriter) escapeString(s string) string {
 	return l.replacer.Replace(s)
+}
+
+func (l *latexTableWriter) flush() error {
+	if l.err != nil {
+		return l.err
+	}
+	return l.w.Flush()
 }

@@ -41,7 +41,7 @@ func (s *LatexWriterTestSuite) TestWriteTabularX() {
 	out, err := newTestWrite(d, w)
 	expected :=
 		`\begin{table}[h]
-\begin{tabularx}{|X|X|X|}
+\begin{tabularx}{\textwidth}{|X|X|X|}
 \hline
 First name & Last name & Age \\ \hline
 Julia      & Roberts   & 40  \\ \hline
@@ -137,7 +137,7 @@ func (s *LatexWriterTestSuite) TestWriteCenterTabularX() {
 	out, err := newTestWrite(d, w)
 	expected :=
 		`\begin{table}[h]
-\begin{tabularx}{|X|X|X|}
+\begin{tabularx}{\textwidth}{|X|X|X|}
 \hline
 First name & Last name & Age \\ \hline
 Julia      & Roberts   & 40  \\ \hline
