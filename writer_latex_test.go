@@ -31,6 +31,29 @@ John       & Malkovich & 42  \\ \hline
 	s.Equal(expected, out)
 }
 
+func (s *LatexWriterTestSuite) TestWriteTabularX() {
+	opts := &LatexOpts{
+		TabularX: true,
+	}
+	w := NewLatexWriter(opts)
+	d, err := newTestDataset()
+	s.Nil(err)
+	out, err := newTestWrite(d, w)
+	expected :=
+		`\begin{table}[h]
+\begin{tabularx}{|X|X|X|}
+\hline
+First name & Last name & Age \\ \hline
+Julia      & Roberts   & 40  \\ \hline
+John       & Malkovich & 42  \\ \hline
+\end{tabularx}
+\end{table}
+`
+
+	s.Nil(err)
+	s.Equal(expected, out)
+}
+
 func (s *LatexWriterTestSuite) TestWriteCaption() {
 	opts := &LatexOpts{
 		Caption: "Test caption",
@@ -96,6 +119,30 @@ First name & Last name & Age \\ \hline
 Julia      & Roberts   & 40  \\ \hline
 John       & Malkovich & 42  \\ \hline
 \end{tabular}
+\end{table}
+`
+
+	s.Nil(err)
+	s.Equal(expected, out)
+}
+
+func (s *LatexWriterTestSuite) TestWriteCenterTabularX() {
+	opts := &LatexOpts{
+		Center:   true,
+		TabularX: true,
+	}
+	w := NewLatexWriter(opts)
+	d, err := newTestDataset()
+	s.Nil(err)
+	out, err := newTestWrite(d, w)
+	expected :=
+		`\begin{table}[h]
+\begin{tabularx}{|X|X|X|}
+\hline
+First name & Last name & Age \\ \hline
+Julia      & Roberts   & 40  \\ \hline
+John       & Malkovich & 42  \\ \hline
+\end{tabularx}
 \end{table}
 `
 

@@ -72,20 +72,18 @@ type latexTableWriter struct {
 
 func (l *latexTableWriter) write() error {
 	l.writeString("\\begin{table}[h]\n")
-
-	if l.opts.Center {
-		l.writeString("\\centering\n")
-	}
-
-	l.writeString("\\begin{tabular}{|l|l|l|}\n")
-	l.writeString("\\hline\n")
+	l.writeHead()
 
 	if l.d.HasHeaders() {
 		l.writeHeaders()
 	}
 
 	l.writeRows()
-	l.writeString("\\end{tabular}\n")
+	if l.opts.TabularX {
+		l.writeString("\\end{tabularx}\n")
+	} else {
+		l.writeString("\\end{tabular}\n")
+	}
 
 	if l.opts.Caption != "" {
 		l.writeElem("caption", l.opts.Caption)
@@ -100,6 +98,45 @@ func (l *latexTableWriter) flush() error {
 		return l.err
 	}
 	return l.w.Flush()
+}
+
+func (l *latexTableWriter) writeHead() {
+	if l.opts.TabularX {
+		l.writeTabularxHead()
+	} else {
+		l.writeTabularHead()
+	}
+
+	l.writeString("\n\\hline\n")
+}
+
+func (l *latexTableWriter) writeTabularHead() {
+	if l.opts.Center {
+		l.writeString("\\centering\n")
+	}
+	l.writeString("\\begin{tabular}{")
+
+	for i := 0; i < l.d.columns; i++ {
+		l.writeString("|l")
+		if i == l.d.columns-1 {
+			l.writeString("|")
+		}
+	}
+
+	l.writeString("}")
+}
+
+func (l *latexTableWriter) writeTabularxHead() {
+	l.writeString("\\begin{tabularx}{")
+
+	for i := 0; i < l.d.columns; i++ {
+		l.writeString("|X")
+		if i == l.d.columns-1 {
+			l.writeString("|")
+		}
+	}
+
+	l.writeString("}")
 }
 
 func (l *latexTableWriter) writeHeaders() {
