@@ -43,7 +43,7 @@ type Dataset struct {
 	headers *Headers
 	rows    []*Row
 
-	columns int
+	cols    int
 	lengths map[int]int
 }
 
@@ -75,12 +75,12 @@ func (d *Dataset) HasHeaders() bool {
 
 // Append appends new rows to the dataset.
 func (d *Dataset) Append(rows ...*Row) error {
-	for _, r := range rows {
-		if err := d.validateRow(r); err != nil {
+	for _, row := range rows {
+		if err := d.validateRow(row); err != nil {
 			return err
 		}
-		d.rows = append(d.rows, r)
-		d.updateLengths(r)
+		d.rows = append(d.rows, row)
+		d.updateLengths(row)
 	}
 	return nil
 }
@@ -203,18 +203,23 @@ func (d *Dataset) Len() int {
 }
 
 func (d *Dataset) validateRow(r *Row) error {
-	columns := r.Len()
-	if columns < 1 {
+	cols := r.Len()
+	if cols < 1 {
 		return ErrInvalidRowWidth{
-			actual:   columns,
+			actual:   cols,
 			expected: 1,
 		}
 	}
 
-	if d.Len() > 0 && d.columns != columns {
+	// do not check cols for first row when there are no headers defined
+	if d.Len() == 0 && !d.HasHeaders() {
+		return nil
+	}
+
+	if d.cols != cols {
 		return ErrInvalidRowWidth{
-			actual:   columns,
-			expected: d.columns,
+			actual:   cols,
+			expected: d.cols,
 		}
 	}
 
@@ -222,12 +227,12 @@ func (d *Dataset) validateRow(r *Row) error {
 }
 
 func (d *Dataset) updateHeaders() {
-	d.columns = d.HeaderCount()
+	d.cols = d.HeaderCount()
 }
 
 func (d *Dataset) updateLengths(r *Row) {
 	if !d.HasHeaders() {
-		d.columns = r.Len()
+		d.cols = r.Len()
 	}
 
 	if d.lengths == nil {

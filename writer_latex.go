@@ -109,9 +109,9 @@ func (l *latexTableWriter) writeTabularHead() {
 	}
 	l.writeString("\\begin{tabular}{")
 
-	for i := 0; i < l.d.columns; i++ {
+	for i := 0; i < l.d.cols; i++ {
 		l.writeString("|l")
-		if i == l.d.columns-1 {
+		if i == l.d.cols-1 {
 			l.writeString("|")
 		}
 	}
@@ -122,9 +122,9 @@ func (l *latexTableWriter) writeTabularHead() {
 func (l *latexTableWriter) writeTabularXHead() {
 	l.writeString("\\begin{tabularx}{\\textwidth}{")
 
-	for i := 0; i < l.d.columns; i++ {
+	for i := 0; i < l.d.cols; i++ {
 		l.writeString("|X")
-		if i == l.d.columns-1 {
+		if i == l.d.cols-1 {
 			l.writeString("|")
 		}
 	}
@@ -144,7 +144,7 @@ func (l *latexTableWriter) writeHeader(idx int, hdr *Header) {
 	padded := padString(hdr.Title, width)
 	l.writeEscaped(padded)
 
-	if l.d.columns > idx+1 {
+	if l.d.cols > idx+1 {
 		l.writeString(" & ")
 	}
 }
@@ -167,7 +167,7 @@ func (l *latexTableWriter) writeItem(idx int, item string) {
 	padded := padString(item, width)
 	l.writeEscaped(padded)
 
-	if l.d.columns > idx+1 {
+	if l.d.cols > idx+1 {
 		l.writeString(" & ")
 	}
 }
