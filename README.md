@@ -202,3 +202,26 @@ yamlw := tabular.NewYAMLWriter(opts)
   lastname: Malkovich
   age: 42
 ```
+
+## SQL
+
+```go
+db, _ := sql.Open("postgres", "postgres://localhost/mydb?sslmode=disable")
+opts := &tabular.SQLOpts{
+    Driver: "postgres",
+    DB:    db,
+    Table: "my_table",
+}
+sqlw := tabular.NewSQLWriter(opts)
+```
+
+### Output
+
+SQL queries are performed in transaction, these are example queries:
+
+```sql
+BEGIN
+INSERT INTO my_table (firstname,lastname,age) VALUES ($1,$2,$3)
+INSERT INTO my_table (firstname,lastname,age) VALUES ($1,$2,$3)
+COMMIT
+```

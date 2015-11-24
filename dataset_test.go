@@ -3,6 +3,7 @@ package tabular
 import (
 	"bufio"
 	"bytes"
+	"io"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -32,6 +33,21 @@ var (
 	}
 )
 
+type mockWriter struct {
+}
+
+func (mw *mockWriter) Name() string {
+	return "mock"
+}
+
+func (mw *mockWriter) NeedsHeaders() bool {
+	return false
+}
+
+func (mw *mockWriter) Write(d *Dataset, w io.Writer) error {
+	return nil
+}
+
 func newTestDataset() (*Dataset, error) {
 	d := NewDataSet()
 	for _, hdr := range testHeaders {
@@ -39,8 +55,7 @@ func newTestDataset() (*Dataset, error) {
 	}
 	for _, row := range testRows {
 		r := NewRowFromSlice(row)
-		err := d.Append(r)
-		if err != nil {
+		if err := d.Append(r); err != nil {
 			return nil, err
 		}
 	}
@@ -50,12 +65,10 @@ func newTestDataset() (*Dataset, error) {
 func newTestWrite(d *Dataset, w Writer) (string, error) {
 	var buf bytes.Buffer
 	bufw := bufio.NewWriter(&buf)
-	err := d.Write(w, bufw)
-	if err != nil {
+	if err := d.Write(w, bufw); err != nil {
 		return "", err
 	}
-	err = bufw.Flush()
-	if err != nil {
+	if err := bufw.Flush(); err != nil {
 		return "", err
 	}
 	return buf.String(), nil
@@ -176,6 +189,17 @@ func (s *DatasetTestSuite) TestColWidth() {
 	s.Equal(6, d.GetIdxWidth(0))
 	s.Equal(8, d.GetIdxWidth(1))
 	s.Equal(0, d.GetIdxWidth(23))
+}
+
+func (s *DatasetTestSuite) TestWriteEmptyDatabaset() {
+	d := NewDataSet()
+	d.AddHeader("name", "Name")
+	d.AddHeader("surname", "Surname")
+
+	mw := &mockWriter{}
+	err := d.Write(mw, nil)
+	s.Error(err)
+	s.Equal(err, ErrEmptyDataset)
 }
 
 func TestDatasetTestSuite(t *testing.T) {
