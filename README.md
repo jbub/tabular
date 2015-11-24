@@ -25,24 +25,24 @@ import (
 )
 
 func main() {
-    set := tabular.NewDataSet()
-    set.AddHeader("firstname", "First name")
-    set.AddHeader("lastname", "Last name")
+    d := tabular.NewDataSet()
+    d.AddHeader("firstname", "First name")
+    d.AddHeader("lastname", "Last name")
 
     r1 := tabular.NewRow("Julia", "Roberts")
     r2 := tabular.NewRow("John", "Malkovich")
-    err := set.Append(r1, r2)
+    err := d.Append(r1, r2)
     if err != nil {
         log.Fatal(err)
     }
 
     opts := &tabular.CSVOpts{
-        Comma: ';',
+        Comma:   ';',
         UseCRLF: true,
     }
     csv := tabular.NewCSVWriter(opts)
 
-    err = set.Write(csv, os.Stdout)
+    err = d.Write(csv, os.Stdout)
     if err != nil {
         log.Fatal(err)
     }
@@ -53,7 +53,7 @@ func main() {
 
 ```go
 opts := &tabular.CSVOpts{
-    Comma: ';',
+    Comma:   ';',
     UseCRLF: true,
 }
 csvw := tabular.NewCSVWriter(opts)
@@ -137,8 +137,8 @@ jsonw := tabular.NewJSONWriter(opts)
 
 ```go
 opts := &tabular.LatexOpts{
-  Caption: "",
-  Center: "",
+  Caption:  "",
+  Center:   "",
   TabularX: false,
 }
 latexw := tabular.NewLatexWriter(opts)
@@ -209,7 +209,7 @@ yamlw := tabular.NewYAMLWriter(opts)
 db, _ := sql.Open("postgres", "postgres://localhost/mydb?sslmode=disable")
 opts := &tabular.SQLOpts{
     Driver: "postgres",
-    DB:    db,
+    DB:     db,
     Table: "my_table",
 }
 sqlw := tabular.NewSQLWriter(opts)
