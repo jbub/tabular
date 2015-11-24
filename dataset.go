@@ -1,8 +1,14 @@
 package tabular
 
 import (
+	"errors"
 	"fmt"
 	"io"
+)
+
+var (
+	// ErrEmptyDataset is returned when operations are applied to empty dataset.
+	ErrEmptyDataset = errors.New("Dataset is empty.")
 )
 
 // ErrInvalidRowWidth is error returned when adding new row with invalid width.
@@ -167,9 +173,14 @@ func (d *Dataset) Sort(key string, reverse bool) *Dataset {
 
 // Write writes dataset using dataset writer to writer.
 func (d *Dataset) Write(dw Writer, w io.Writer) error {
+	if d.Len() == 0 {
+		return ErrEmptyDataset
+	}
+
 	if dw.NeedsHeaders() && d.headers.Empty() {
 		return ErrHeadersRequired{dw}
 	}
+
 	return dw.Write(d, w)
 }
 
