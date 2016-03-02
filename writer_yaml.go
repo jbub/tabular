@@ -3,6 +3,7 @@ package tabular
 import (
 	"bufio"
 	"io"
+	"strings"
 )
 
 // YAMLOpts represents options passed to the YAML writer.
@@ -36,11 +37,22 @@ func (wy *YAMLWriter) Write(d *Dataset, w io.Writer) error {
 	return tw.write()
 }
 
+// http://symfony.com/doc/current/components/yaml/yaml_format.html
+var yamlReplacements = []string{
+	"&", "\\&",
+	"%", "\\%",
+	"$", "\\$",
+	"#", "\\#",
+	"{", "\\{",
+	"}", "\\}",
+}
+
 func newYAMLTableWriter(d *Dataset, w io.Writer, opts *YAMLOpts) *yamlTableWriter {
 	return &yamlTableWriter{
-		d:    d,
-		w:    bufio.NewWriter(w),
-		opts: opts,
+		d:        d,
+		w:        bufio.NewWriter(w),
+		opts:     opts,
+		replacer: strings.NewReplacer(yamlReplacements...),
 	}
 }
 
@@ -49,6 +61,8 @@ type yamlTableWriter struct {
 	w    *bufio.Writer
 	opts *YAMLOpts
 	err  error
+
+	replacer *strings.Replacer
 }
 
 func (y *yamlTableWriter) write() error {
@@ -82,10 +96,18 @@ func (y *yamlTableWriter) writeString(s string) {
 	y.err = err
 }
 
+func (l *yamlTableWriter) escapeKey(s string) string {
+	return l.escapeString(s)
+}
+
+func (l *yamlTableWriter) escapeValue(s string) string {
+	return l.escapeString(s)
+}
+
 func (y *yamlTableWriter) writeEscaped(s string) {
 	y.writeString(y.escapeString(s))
 }
 
 func (y *yamlTableWriter) escapeString(s string) string {
-	return s
+	return y.replacer.Replace(s)
 }

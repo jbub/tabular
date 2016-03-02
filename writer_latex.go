@@ -40,7 +40,7 @@ func (wl *LatexWriter) Write(d *Dataset, w io.Writer) error {
 	return tw.write()
 }
 
-var replacements = []string{
+var latexReplacements = []string{
 	"&", "\\&",
 	"%", "\\%",
 	"$", "\\$",
@@ -57,7 +57,7 @@ func newLatexTableWriter(d *Dataset, w io.Writer, opts *LatexOpts) *latexTableWr
 		d:        d,
 		w:        bufio.NewWriter(w),
 		opts:     opts,
-		replacer: strings.NewReplacer(replacements...),
+		replacer: strings.NewReplacer(latexReplacements...),
 	}
 }
 
