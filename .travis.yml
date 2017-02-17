@@ -1,8 +1,7 @@
 sudo: false
 language: go
 go:
-  - 1.6
-  - 1.7
+  - 1.8
   - tip
 before_install:
   - go get github.com/axw/gocov/gocov
@@ -10,4 +9,10 @@ before_install:
   - go get golang.org/x/tools/cmd/cover
 script:
   - go test -v
-  - $HOME/gopath/bin/goveralls -service=travis-ci
+  - goveralls -service=travis-ci
+branches:
+  only:
+    - master
+matrix:
+  allow_failures:
+    - go: tip
