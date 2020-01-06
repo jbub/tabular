@@ -13,7 +13,7 @@ func NewRowFromSlice(items []string) *Row {
 	return NewRow(items...)
 }
 
-// Row represens a row of dataset.
+// Row represents a row of dataset.
 type Row struct {
 	items  []string
 	tagger Tagger
@@ -21,9 +21,7 @@ type Row struct {
 
 // Add appends new items to the row.
 func (r *Row) Add(items ...string) {
-	for _, item := range items {
-		r.items = append(r.items, item)
-	}
+	r.items = append(r.items, items...)
 }
 
 // Get returns tow item on given index .
