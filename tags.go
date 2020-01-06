@@ -1,13 +1,9 @@
 package tabular
 
-import (
-	mapset "github.com/deckarep/golang-set"
-)
-
 // NewTagger returns a new Tagger.
 func NewTagger() Tagger {
 	return &SetTagger{
-		tags: mapset.NewSet(),
+		tags: newStringSet(),
 	}
 }
 
@@ -21,9 +17,9 @@ type Tagger interface {
 	Len() int
 }
 
-// SetTagger implements a Tagger using mapset datastructure.
+// SetTagger implements a Tagger using string map set.
 type SetTagger struct {
-	tags mapset.Set
+	tags stringSet
 }
 
 // Add adds new tag.
@@ -41,7 +37,7 @@ func (t *SetTagger) HasAll(tags ...string) bool {
 	if len(tags) == 0 || t.Len() == 0 {
 		return false
 	}
-	other := mapset.NewSet()
+	other := newStringSet()
 	for _, tag := range tags {
 		other.Add(tag)
 	}
@@ -53,7 +49,7 @@ func (t *SetTagger) HasAny(tags ...string) bool {
 	if len(tags) == 0 || t.Len() == 0 {
 		return false
 	}
-	other := mapset.NewSet()
+	other := newStringSet()
 	for _, tag := range tags {
 		other.Add(tag)
 	}
@@ -62,14 +58,14 @@ func (t *SetTagger) HasAny(tags ...string) bool {
 
 // Items returns all tags as a slice of strings.
 func (t *SetTagger) Items() []string {
-	tags := make([]string, 0, t.tags.Cardinality())
-	for tag := range t.tags.Iter() {
-		tags = append(tags, tag.(string))
-	}
+	tags := make([]string, 0, t.tags.Len())
+	t.tags.Each(func(tag string) {
+		tags = append(tags, tag)
+	})
 	return tags
 }
 
 // Len returns tag count.
 func (t *SetTagger) Len() int {
-	return t.tags.Cardinality()
+	return t.tags.Len()
 }
