@@ -28,5 +28,9 @@ _testmain.go
 *.test
 *.prof
 
+# Cover
+*.coverprofile
+*.out
+
 # Goland
 .idea/
