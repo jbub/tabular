@@ -8,7 +8,7 @@ import (
 
 var (
 	// ErrEmptyDataset is returned when operations are applied to empty dataset.
-	ErrEmptyDataset = errors.New("Dataset is empty.")
+	ErrEmptyDataset = errors.New("dataset is empty")
 )
 
 // ErrInvalidRowWidth is error returned when adding new row with invalid width.
