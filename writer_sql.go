@@ -62,7 +62,7 @@ func (stw *sqlTableWriter) placeholder() squirrel.PlaceholderFormat {
 }
 
 func (stw *sqlTableWriter) cols() []string {
-	var cols []string
+	cols := make([]string, 0, stw.d.HeaderCount())
 	for _, hdr := range stw.d.Headers() {
 		if v, ok := stw.opts.ColMapping[hdr.Key]; ok {
 			cols = append(cols, v)
@@ -74,11 +74,11 @@ func (stw *sqlTableWriter) cols() []string {
 }
 
 func (stw *sqlTableWriter) vals(row *Row) []interface{} {
-	var vals []interface{}
+	res := make([]interface{}, 0, row.Len())
 	for _, item := range row.Items() {
-		vals = append(vals, item)
+		res = append(res, item)
 	}
-	return vals
+	return res
 }
 
 func (stw *sqlTableWriter) query(tx *sql.Tx, row *Row) (sql.Result, error) {

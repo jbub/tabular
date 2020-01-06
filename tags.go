@@ -62,7 +62,7 @@ func (t *SetTagger) HasAny(tags ...string) bool {
 
 // Items returns all tags as a slice of strings.
 func (t *SetTagger) Items() []string {
-	tags := make([]string, t.tags.Cardinality())
+	tags := make([]string, 0, t.tags.Cardinality())
 	for tag := range t.tags.Iter() {
 		tags = append(tags, tag.(string))
 	}
