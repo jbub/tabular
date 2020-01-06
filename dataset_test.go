@@ -114,7 +114,7 @@ func (s *DatasetTestSuite) TestSort() {
 	r2 := NewRow("martin", "brown")
 	r3 := NewRow("peter", "kafka")
 
-	d.Append(r1, r2, r3)
+	s.NoError(d.Append(r1, r2, r3))
 	d.Sort("name", false)
 
 	e1, _ := d.Get(0)
@@ -135,7 +135,7 @@ func (s *DatasetTestSuite) TestSortReverse() {
 	r2 := NewRow("martin", "brown")
 	r3 := NewRow("peter", "kafka")
 
-	d.Append(r1, r2, r3)
+	s.NoError(d.Append(r1, r2, r3))
 	d.Sort("name", true)
 
 	e1, _ := d.Get(0)
@@ -166,7 +166,7 @@ func (s *DatasetTestSuite) TestColValues() {
 	r1 := NewRow("julia", "mitchell")
 	r2 := NewRow("martin", "brown")
 	r3 := NewRow("peter", "kafka")
-	d.Append(r1, r2, r3)
+	s.NoError(d.Append(r1, r2, r3))
 
 	s.Equal([]string{"julia", "martin", "peter"}, d.GetColValues("name"))
 	s.Equal([]string{"mitchell", "brown", "kafka"}, d.GetColValues("surname"))
@@ -180,7 +180,7 @@ func (s *DatasetTestSuite) TestColWidth() {
 	r1 := NewRow("julia", "mitchell")
 	r2 := NewRow("martin", "brown")
 	r3 := NewRow("peter", "kafka")
-	d.Append(r1, r2, r3)
+	s.NoError(d.Append(r1, r2, r3))
 
 	s.Equal(6, d.GetKeyWidth("name"))
 	s.Equal(8, d.GetKeyWidth("surname"))
