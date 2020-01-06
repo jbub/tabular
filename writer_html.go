@@ -113,12 +113,6 @@ func (h *htmlTableWriter) writeRowItem(item string, level int) {
 	h.writeInlineElem("td", item, h.opts.DataClass, level)
 }
 
-func (h *htmlTableWriter) writeElem(name string, val string, class string, level int) {
-	h.writeStartElem(name, level, class, false)
-	h.writeEscaped(val)
-	h.writeEndElem(name, level, true)
-}
-
 func (h *htmlTableWriter) writeInlineElem(name string, val string, class string, level int) {
 	h.writeStartElem(name, level, class, false)
 	h.writeEscaped(val)
