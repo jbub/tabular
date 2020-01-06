@@ -1,8 +1,8 @@
 sudo: false
 language: go
 go:
-  - 1.9.4
-  - tip
+  - "1.13"
+  - "tip"
 before_install:
   - go get github.com/axw/gocov/gocov
   - go get github.com/mattn/goveralls
