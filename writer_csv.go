@@ -43,7 +43,9 @@ func (wc *CSVWriter) Write(d *Dataset, w io.Writer) error {
 		for _, hdr := range d.Headers() {
 			hdrs = append(hdrs, hdr.Title)
 		}
-		cw.Write(hdrs)
+		if err := cw.Write(hdrs); err != nil {
+			return err
+		}
 	}
 
 	for _, row := range d.rows {
