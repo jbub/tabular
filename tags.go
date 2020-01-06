@@ -1,14 +1,14 @@
 package tabular
 
 import (
-	"github.com/deckarep/golang-set"
+	mapset "github.com/deckarep/golang-set"
 )
 
 // NewTagger returns a new Tagger.
 func NewTagger() Tagger {
-	t := &SetTagger{}
-	t.tags = mapset.NewSet()
-	return t
+	return &SetTagger{
+		tags: mapset.NewSet(),
+	}
 }
 
 // Tagger represents set of tags.
@@ -62,7 +62,7 @@ func (t *SetTagger) HasAny(tags ...string) bool {
 
 // Items returns all tags as a slice of strings.
 func (t *SetTagger) Items() []string {
-	var tags []string
+	tags := make([]string, t.tags.Cardinality())
 	for tag := range t.tags.Iter() {
 		tags = append(tags, tag.(string))
 	}
