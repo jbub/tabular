@@ -96,14 +96,6 @@ func (y *yamlTableWriter) writeString(s string) {
 	y.err = err
 }
 
-func (y *yamlTableWriter) escapeKey(s string) string {
-	return y.escapeString(s)
-}
-
-func (y *yamlTableWriter) escapeValue(s string) string {
-	return y.escapeString(s)
-}
-
 func (y *yamlTableWriter) writeEscaped(s string) {
 	y.writeString(y.escapeString(s))
 }
