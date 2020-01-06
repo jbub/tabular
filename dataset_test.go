@@ -191,7 +191,7 @@ func (s *DatasetTestSuite) TestColWidth() {
 	s.Equal(0, d.GetIdxWidth(23))
 }
 
-func (s *DatasetTestSuite) TestWriteEmptyDatabaset() {
+func (s *DatasetTestSuite) TestWriteEmptyDataset() {
 	d := NewDataSet()
 	d.AddHeader("name", "Name")
 	d.AddHeader("surname", "Surname")
