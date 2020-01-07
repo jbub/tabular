@@ -22,7 +22,7 @@ type SetTagger struct {
 	tags stringSet
 }
 
-// Add adds new tag. Returns bool
+// Add adds new tag. Returns true when new tag was added, false otherwise.
 func (t *SetTagger) Add(tag string) bool {
 	return t.tags.Add(tag)
 }
