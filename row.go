@@ -40,8 +40,8 @@ func (r *Row) Len() int {
 }
 
 // AddTag append new tag to the row.
-func (r *Row) AddTag(tag string) {
-	r.tagger.Add(tag)
+func (r *Row) AddTag(tag string) bool {
+	return r.tagger.Add(tag)
 }
 
 // HasTag checks for tag presence of row.

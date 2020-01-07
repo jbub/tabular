@@ -9,7 +9,7 @@ func NewTagger() Tagger {
 
 // Tagger represents set of tags.
 type Tagger interface {
-	Add(tag string)
+	Add(tag string) bool
 	Has(tag string) bool
 	HasAll(tags ...string) bool
 	HasAny(tags ...string) bool
@@ -22,9 +22,9 @@ type SetTagger struct {
 	tags stringSet
 }
 
-// Add adds new tag.
-func (t *SetTagger) Add(tag string) {
-	t.tags.Add(tag)
+// Add adds new tag. Returns bool
+func (t *SetTagger) Add(tag string) bool {
+	return t.tags.Add(tag)
 }
 
 // Has checks if tag in present in the set.

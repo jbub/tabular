@@ -24,24 +24,6 @@ func (s *stringSet) Contains(i ...string) bool {
 	return true
 }
 
-func (s *stringSet) Each(cb func(string)) {
-	for elem := range *s {
-		cb(elem)
-	}
-}
-
-func (s *stringSet) Equal(other stringSet) bool {
-	if s.Len() != other.Len() {
-		return false
-	}
-	for elem := range *s {
-		if !other.Contains(elem) {
-			return false
-		}
-	}
-	return true
-}
-
 func (s *stringSet) Items() []string {
 	elems := make([]string, 0, len(*s))
 	for elem := range *s {
