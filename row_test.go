@@ -1,6 +1,7 @@
 package tabular
 
 import (
+	"sort"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -63,6 +64,21 @@ func (s *RowTestSuite) TestHasAnyTagsEmpty() {
 
 	has := r.HasAnyTags("tag1", "tag2")
 	s.False(has)
+}
+
+func (s *RowTestSuite) TestTagsItems() {
+	r := NewRow()
+	r.AddTag("tag34")
+	r.AddTag("tag26")
+	r.AddTag("tag1")
+
+	tags := r.Tags()
+	expected := []string{"tag26", "tag1", "tag34"}
+
+	sort.Strings(expected)
+	sort.Strings(tags)
+
+	s.Equal(expected, tags)
 }
 
 func TestRowTestSuite(t *testing.T) {

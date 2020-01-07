@@ -37,11 +37,12 @@ func (t *SetTagger) HasAll(tags ...string) bool {
 	if len(tags) == 0 || t.Len() == 0 {
 		return false
 	}
-	other := newStringSet()
 	for _, tag := range tags {
-		other.Add(tag)
+		if !t.tags.Contains(tag) {
+			return false
+		}
 	}
-	return t.tags.Equal(other)
+	return true
 }
 
 // HasAny checks if at least one of the tags is present.
@@ -49,20 +50,17 @@ func (t *SetTagger) HasAny(tags ...string) bool {
 	if len(tags) == 0 || t.Len() == 0 {
 		return false
 	}
-	other := newStringSet()
 	for _, tag := range tags {
-		other.Add(tag)
+		if t.tags.Contains(tag) {
+			return true
+		}
 	}
-	return t.tags.IsSubset(other)
+	return false
 }
 
 // Items returns all tags as a slice of strings.
 func (t *SetTagger) Items() []string {
-	tags := make([]string, 0, t.tags.Len())
-	t.tags.Each(func(tag string) {
-		tags = append(tags, tag)
-	})
-	return tags
+	return t.tags.Items()
 }
 
 // Len returns tag count.

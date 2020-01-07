@@ -7,8 +7,7 @@ func newStringSet() stringSet {
 }
 
 func (s *stringSet) Add(i string) bool {
-	_, found := (*s)[i]
-	if found {
+	if _, found := (*s)[i]; found {
 		return false
 	}
 
@@ -19,15 +18,6 @@ func (s *stringSet) Add(i string) bool {
 func (s *stringSet) Contains(i ...string) bool {
 	for _, val := range i {
 		if _, ok := (*s)[val]; !ok {
-			return false
-		}
-	}
-	return true
-}
-
-func (s *stringSet) IsSubset(other stringSet) bool {
-	for elem := range *s {
-		if !other.Contains(elem) {
 			return false
 		}
 	}
@@ -50,6 +40,14 @@ func (s *stringSet) Equal(other stringSet) bool {
 		}
 	}
 	return true
+}
+
+func (s *stringSet) Items() []string {
+	elems := make([]string, 0, len(*s))
+	for elem := range *s {
+		elems = append(elems, elem)
+	}
+	return elems
 }
 
 func (s *stringSet) Len() int {
